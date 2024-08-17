@@ -1,5 +1,7 @@
 local M = {}
 
+M.version = "1.0.0"  -- Update this with each release
+
 -- Get list of installed themes
 local function get_installed_themes()
   local themes = vim.fn.getcompletion('', 'color')
@@ -96,6 +98,33 @@ function M.setup_daily_theme()
     print("RandTheme: Restored theme - " .. current_theme)
   else
     print("RandTheme: Theme already set for today")
+  end
+end
+
+-- Function to reroll the theme
+function M.reroll_theme()
+  local themes = get_installed_themes()
+  local new_theme = select_random_theme(themes)
+  if set_theme(new_theme) then
+    set_last_change_date(os.date('%Y-%m-%d'))
+    print("RandTheme: New theme set - " .. new_theme)
+  end
+end
+
+-- Setup function
+function M.setup(opts)
+  opts = opts or {}
+  
+  -- Set up the VimEnter autocmd
+  vim.api.nvim_create_autocmd("VimEnter", {
+    callback = function()
+      M.setup_daily_theme()
+    end,
+  })
+
+  -- Set up the reroll keymap if provided
+  if opts.reroll_keymap then
+    vim.keymap.set('n', opts.reroll_keymap, M.reroll_theme, { noremap = true, silent = true })
   end
 end
 
