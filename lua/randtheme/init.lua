@@ -1,6 +1,6 @@
 local M = {}
 
-M.version = "1.0.0"  -- Update this with each release
+M.version = "1.0.6"
 
 -- Get list of installed themes
 local function get_installed_themes()
