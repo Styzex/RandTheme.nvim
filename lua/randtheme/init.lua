@@ -2,8 +2,29 @@ local M = {}
 
 -- Get list of installed themes
 local function get_installed_themes()
-  -- This is a placeholder. You'll need to implement a way to get the actual list of installed themes.
-  return vim.fn.getcompletion('', 'color')
+  local themes = vim.fn.getcompletion('', 'color')
+  
+  -- Add support for Packer
+  local packer_plugins = _G.packer_plugins
+  if packer_plugins then
+    for plugin_name, plugin in pairs(packer_plugins) do
+      if plugin.loaded and plugin.config and type(plugin.config) == "table" and plugin.config.colorscheme then
+        table.insert(themes, plugin.config.colorscheme)
+      end
+    end
+  end
+  
+  -- Add support for Lazy
+  local lazy_plugins = _G.lazy and _G.lazy.plugins()
+  if lazy_plugins then
+    for _, plugin in ipairs(lazy_plugins) do
+      if plugin.loaded and plugin.config and type(plugin.config) == "table" and plugin.config.colorscheme then
+        table.insert(themes, plugin.config.colorscheme)
+      end
+    end
+  end
+  
+  return themes
 end
 
 -- Select a random theme
@@ -25,7 +46,18 @@ end
 
 -- Set the theme
 local function set_theme(theme)
-  vim.cmd('colorscheme ' .. theme)
+  local status_ok, _ = pcall(vim.cmd, 'colorscheme ' .. theme)
+  if not status_ok then
+    vim.notify('Error setting colorscheme ' .. theme, vim.log.levels.ERROR)
+    return false
+  end
+
+  -- Check if lualine is loaded and update its colorscheme
+  if package.loaded['lualine'] then
+    require('lualine').setup({options = {theme = theme}})
+  end
+
+  return true
 end
 
 -- Check if it's a new day
@@ -42,9 +74,10 @@ function M.setup_daily_theme()
   if not last_change or is_new_day(last_change) then
     local themes = get_installed_themes()
     local new_theme = select_random_theme(themes)
-    set_theme(new_theme)
-    set_last_change_date(today)
-    print("RandTheme: New theme set - " .. new_theme)
+    if set_theme(new_theme) then
+      set_last_change_date(today)
+      print("RandTheme: New theme set - " .. new_theme)
+    end
   else
     print("RandTheme: Theme already set for today")
   end
