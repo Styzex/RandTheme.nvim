@@ -8,7 +8,8 @@ local function get_installed_themes()
   local builtin_themes = {
     'blue', 'darkblue', 'default', 'delek', 'desert', 'elflord', 'evening',
     'industry', 'koehler', 'morning', 'murphy', 'pablo', 'peachpuff', 'ron',
-    'shine', 'slate', 'torte', 'zellner'
+    'shine', 'slate', 'torte', 'zellner', 'zaibatsu', 'vim', 'wildcharm',
+     'lunaperche', 'retrobox', 'habamax', 'quiet'
   }
   
   if config.get().include_builtin_themes then
