@@ -8,7 +8,7 @@ RandTheme is a Neovim plugin that automatically sets a new theme every day, addi
 - 🗓️ Daily Theme Change: Automatically changes your theme daily.
 - ⚙️ Easy Setup and Usage
 
-### 📦 Installation
+## 📦 Installation
 
 Choose your preferred plugin manager:
 
