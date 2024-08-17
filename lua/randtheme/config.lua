@@ -6,7 +6,7 @@ local default_config = {
   print_theme_name = false,
   change_interval = 1,
   colorscheme_dir = nil,
-  reroll_keymap = nil,
+  reroll_keymap = "<leader>tr",
   include_builtin_themes = false,
 }
 

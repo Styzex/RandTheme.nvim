@@ -2,7 +2,7 @@
 
 RandTheme is a Neovim plugin that automatically sets a new theme every day, adding variety to your coding experience.
 
-# ✨ Features
+## ✨ Features
 
 - 🧠 Auto-Detection: Detects your installed themes.
 - 🗓️ Daily Theme Change: Automatically changes your theme daily.
@@ -65,6 +65,91 @@ require('randtheme').setup({
 - `colorscheme_dir`: Specify a custom directory to search for colorschemes. If not set, RandTheme will use Neovim's default colorscheme locations.
 - `include_builtin_themes`: If set to `true`, includes Neovim's built-in themes in the random selection. Default is `false`.
 - `reroll_keymap`: Set a keymap for manually changing the theme.
+
+### 📦 [packer.nvim](https://github.com/wbthomason/packer.nvim)
+
+```lua
+use {
+  'Styzex/RandTheme.nvim',
+  config = function()
+  require('randtheme').setup({
+    exclude_themes = {},
+    change_on_startup = true,
+    print_theme_name = true,
+    change_interval = 1,
+    colorscheme_dir = "~/.config/nvim/colors",
+    include_builtin_themes = false,
+    reroll_keymap = "<leader>tr",
+  })
+  end
+}
+```
+
+## 📦 [vim-plug](https://github.com/junegunn/vim-plug)
+
+example config:
+
+```vim
+Plug 'Styzex/RandTheme.nvim'
+" Add this to your init.vim or .vimrc after the Plug commands
+lua << EOF
+require('randtheme').setup({
+    exclude_themes = {},
+    change_on_startup = true,
+    print_theme_name = true,
+    change_interval = 1,
+    colorscheme_dir = "~/.config/nvim/colors",
+    include_builtin_themes = false,
+    reroll_keymap = "<leader>tr",
+})
+EOF
+```
+
+## 📦 [lazy.nvim](https://github.com/folke/lazy.nvim)
+
+example config:
+
+```lua
+{
+  "Styzex/RandTheme.nvim",
+  event = "VimEnter",
+    -- Your configuration options here (all optional)
+    lazy = false,
+    priority = 1000,
+    config = function()
+      require("randtheme").setup({
+        exclude_themes = {},
+        change_on_startup = true,
+        print_theme_name = true,
+        change_interval = 1,
+        colorscheme_dir = "~/.config/nvim/colors",
+        include_builtin_themes = false,
+        reroll_keymap = "<leader>tr",
+      })
+    end,
+  },
+```
+
+You can also use the `opts` option to pass in the configuration options:
+
+```lua
+{
+  "Styzex/RandTheme.nvim",
+  event = "VimEnter",
+    -- Your configuration options here (all optional)
+    lazy = false,
+    priority = 1000,
+    opts = {
+        exclude_themes = {},
+        change_on_startup = true,
+        print_theme_name = false,
+        change_interval = 1,
+        colorscheme_dir = "~/.config/nvim/colors",
+        include_builtin_themes = false,
+        reroll_keymap = "<leader>tr",
+    }
+  },
+```
 
 ## 🤝Contributing
 

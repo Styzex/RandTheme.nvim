@@ -4,10 +4,25 @@ local config = require('randtheme.config')
 local utils = require('randtheme.utils')
 
 local function get_installed_themes()
-  local themes = {}
+  local themes = vim.fn.getcompletion('', 'color')
+  local builtin_themes = {
+    'blue', 'darkblue', 'default', 'delek', 'desert', 'elflord', 'evening',
+    'industry', 'koehler', 'morning', 'murphy', 'pablo', 'peachpuff', 'ron',
+    'shine', 'slate', 'torte', 'zellner'
+  }
   
   if config.get().include_builtin_themes then
-    themes = vim.fn.getcompletion('', 'color')
+    -- Ensure all builtin themes are included
+    for _, theme in ipairs(builtin_themes) do
+      if not vim.tbl_contains(themes, theme) then
+        table.insert(themes, theme)
+      end
+    end
+  else
+    -- Filter out builtin themes
+    themes = vim.tbl_filter(function(theme)
+      return not vim.tbl_contains(builtin_themes, theme)
+    end, themes)
   end
   
   -- Add support for Packer and Lazy
