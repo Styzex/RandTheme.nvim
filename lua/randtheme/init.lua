@@ -1,6 +1,6 @@
 local M = {}
 
-M.version = "1.1.0"
+M.version = "1.1.1"
 
 local config = require('randtheme.config')
 local theme_manager = require('randtheme.theme_manager')
