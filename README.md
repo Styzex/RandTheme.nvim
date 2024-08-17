@@ -66,10 +66,6 @@ require('randtheme').setup({
 - `include_builtin_themes`: If set to `true`, includes Neovim's built-in themes in the random selection. Default is `false`.
 - `reroll_keymap`: Set a keymap for manually changing the theme.
 
-## 📄 License
-
-MIT
-
 ## 🤝Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
