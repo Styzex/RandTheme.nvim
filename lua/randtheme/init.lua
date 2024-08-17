@@ -1,10 +1,28 @@
 local M = {}
 
-M.version = "1.0.6"
+M.version = "1.0.8"
+
+-- Default configuration
+local default_config = {
+  exclude_themes = {},
+  change_on_startup = true,
+  print_theme_name = false,
+  change_interval = 1,
+  colorscheme_dir = nil,
+  reroll_keymap = nil,
+  include_builtin_themes = false,  -- New option to include builtin themes
+}
+
+local config = default_config
 
 -- Get list of installed themes
 local function get_installed_themes()
-  local themes = vim.fn.getcompletion('', 'color')
+  local themes = {}
+  
+  -- Only include builtin themes if the option is set to true
+  if config.include_builtin_themes then
+    themes = vim.fn.getcompletion('', 'color')
+  end
   
   -- Add support for Packer
   local packer_plugins = _G.packer_plugins
@@ -25,7 +43,22 @@ local function get_installed_themes()
       end
     end
   end
+
+  -- Add themes from custom directory if specified
+  if config.colorscheme_dir then
+    local custom_themes = vim.fn.globpath(config.colorscheme_dir, '*.vim', false, true)
+    for _, theme in ipairs(custom_themes) do
+      table.insert(themes, vim.fn.fnamemodify(theme, ':t:r'))
+    end
+  end
   
+  -- Remove excluded themes
+  for i = #themes, 1, -1 do
+    if vim.tbl_contains(config.exclude_themes, themes[i]) then
+      table.remove(themes, i)
+    end
+  end
+
   return themes
 end
 
@@ -71,13 +104,18 @@ local function set_theme(theme)
   end
 
   set_current_theme(theme)
+  if config.print_theme_name then
+    print("RandTheme: New theme set - " .. theme)
+  end
   return true
 end
 
--- Check if it's a new day
-local function is_new_day(last_change)
+-- Check if it's time for a theme change
+local function is_time_to_change(last_change)
+  if not last_change then return true end
   local today = os.date('%Y-%m-%d')
-  return last_change ~= today
+  local days_passed = os.difftime(os.time(os.date("!*t", os.time())), os.time(os.date("!*t", last_change))) / (24 * 60 * 60)
+  return days_passed >= config.change_interval
 end
 
 -- Main function to setup daily theme
@@ -86,16 +124,14 @@ function M.setup_daily_theme()
   local today = os.date('%Y-%m-%d')
   local current_theme = get_current_theme()
 
-  if not last_change or is_new_day(last_change) then
+  if not last_change or is_time_to_change(last_change) then
     local themes = get_installed_themes()
     local new_theme = select_random_theme(themes)
     if set_theme(new_theme) then
       set_last_change_date(today)
-      print("RandTheme: New theme set - " .. new_theme)
     end
   elseif current_theme then
     set_theme(current_theme)
-    print("RandTheme: Restored theme - " .. current_theme)
   else
     print("RandTheme: Theme already set for today")
   end
@@ -107,24 +143,25 @@ function M.reroll_theme()
   local new_theme = select_random_theme(themes)
   if set_theme(new_theme) then
     set_last_change_date(os.date('%Y-%m-%d'))
-    print("RandTheme: New theme set - " .. new_theme)
   end
 end
 
 -- Setup function
 function M.setup(opts)
-  opts = opts or {}
+  config = vim.tbl_deep_extend("force", default_config, opts or {})
   
-  -- Set up the VimEnter autocmd
-  vim.api.nvim_create_autocmd("VimEnter", {
-    callback = function()
-      M.setup_daily_theme()
-    end,
-  })
+  -- Set up the VimEnter autocmd if change_on_startup is true
+  if config.change_on_startup then
+    vim.api.nvim_create_autocmd("VimEnter", {
+      callback = function()
+        M.setup_daily_theme()
+      end,
+    })
+  end
 
   -- Set up the reroll keymap if provided
-  if opts.reroll_keymap then
-    vim.keymap.set('n', opts.reroll_keymap, M.reroll_theme, { noremap = true, silent = true })
+  if config.reroll_keymap then
+    vim.keymap.set('n', config.reroll_keymap, M.reroll_theme, { noremap = true, silent = true })
   end
 end
 
