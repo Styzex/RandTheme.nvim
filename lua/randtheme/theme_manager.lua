@@ -40,11 +40,19 @@ local function get_installed_themes()
 end
 
 local function select_random_theme(themes)
+  if #themes == 0 then
+    return nil
+  end
   math.randomseed(os.time())
   return themes[math.random(#themes)]
 end
 
 local function set_theme(theme)
+  if not theme then
+    vim.notify('No theme available to set', vim.log.levels.ERROR)
+    return false
+  end
+
   local status_ok, _ = pcall(vim.cmd, 'colorscheme ' .. theme)
   if not status_ok then
     vim.notify('Error setting colorscheme ' .. theme, vim.log.levels.ERROR)
@@ -70,8 +78,12 @@ function M.setup_daily_theme()
   if not last_change or utils.is_time_to_change(last_change) then
     local themes = get_installed_themes()
     local new_theme = select_random_theme(themes)
-    if set_theme(new_theme) then
-      utils.set_last_change_date(today)
+    if new_theme then
+      if set_theme(new_theme) then
+        utils.set_last_change_date(today)
+      end
+    else
+      vim.notify('No themes available to select from', vim.log.levels.WARN)
     end
   elseif current_theme then
     set_theme(current_theme)
@@ -83,8 +95,12 @@ end
 function M.reroll_theme()
   local themes = get_installed_themes()
   local new_theme = select_random_theme(themes)
-  if set_theme(new_theme) then
-    utils.set_last_change_date(os.date('%Y-%m-%d'))
+  if new_theme then
+    if set_theme(new_theme) then
+      utils.set_last_change_date(os.date('%Y-%m-%d'))
+    end
+  else
+    vim.notify('No themes available to select from', vim.log.levels.WARN)
   end
 end
 
