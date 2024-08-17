@@ -1,6 +1,6 @@
 local M = {}
 
-M.version = "1.0.8"
+M.version = "1.0.9"
 
 -- Default configuration
 local default_config = {
@@ -113,8 +113,21 @@ end
 -- Check if it's time for a theme change
 local function is_time_to_change(last_change)
   if not last_change then return true end
-  local today = os.date('%Y-%m-%d')
-  local days_passed = os.difftime(os.time(os.date("!*t", os.time())), os.time(os.date("!*t", last_change))) / (24 * 60 * 60)
+  
+  local year, month, day = last_change:match("(%d%d%d%d)-(%d%d)-(%d%d)")
+  if not year or not month or not day then
+    -- If the date format is invalid, assume it's time to change
+    return true
+  end
+
+  local last_change_time = os.time({
+    year = tonumber(year),
+    month = tonumber(month),
+    day = tonumber(day)
+  })
+
+  local today = os.time()
+  local days_passed = os.difftime(today, last_change_time) / (24 * 60 * 60)
   return days_passed >= config.change_interval
 end
 
