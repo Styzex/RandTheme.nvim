@@ -69,3 +69,27 @@ require('randtheme').setup({
 ## 🤝Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+### 📜 Code Style
+
+- Use clear and descriptive variable and function names.
+
+### 🛑 Reporting Issues
+
+If you find a bug or have a suggestion for improvement:
+
+1. Check if the issue already exists in the [issue tracker](https://github.com/Styzex/RandTheme.nvim/issues).
+2. If not, create a new issue, providing as much detail as possible, including:
+   - Steps to reproduce the bug
+   - Expected behavior
+   - Actual behavior
+   - Neovim version
+   - Operating system
+
+### 🤔 Questions?
+
+If you have questions, feel free to:
+
+- Open an issue with your question
+
+We appreciate your interest in making RandTheme better for everyone!
