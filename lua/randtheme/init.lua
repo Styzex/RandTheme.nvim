@@ -44,6 +44,17 @@ local function set_last_change_date(date)
   vim.fn.writefile({date}, vim.fn.stdpath('data') .. '/randtheme_last_change')
 end
 
+-- Get/Set the current theme
+local function get_current_theme()
+  return vim.fn.filereadable(vim.fn.stdpath('data') .. '/randtheme_current') == 1
+    and vim.fn.readfile(vim.fn.stdpath('data') .. '/randtheme_current')[1]
+    or nil
+end
+
+local function set_current_theme(theme)
+  vim.fn.writefile({theme}, vim.fn.stdpath('data') .. '/randtheme_current')
+end
+
 -- Set the theme
 local function set_theme(theme)
   local status_ok, _ = pcall(vim.cmd, 'colorscheme ' .. theme)
@@ -57,6 +68,7 @@ local function set_theme(theme)
     require('lualine').setup({options = {theme = theme}})
   end
 
+  set_current_theme(theme)
   return true
 end
 
@@ -70,6 +82,7 @@ end
 function M.setup_daily_theme()
   local last_change = get_last_change_date()
   local today = os.date('%Y-%m-%d')
+  local current_theme = get_current_theme()
 
   if not last_change or is_new_day(last_change) then
     local themes = get_installed_themes()
@@ -78,6 +91,9 @@ function M.setup_daily_theme()
       set_last_change_date(today)
       print("RandTheme: New theme set - " .. new_theme)
     end
+  elseif current_theme then
+    set_theme(current_theme)
+    print("RandTheme: Restored theme - " .. current_theme)
   else
     print("RandTheme: Theme already set for today")
   end
