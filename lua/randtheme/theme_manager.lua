@@ -9,7 +9,7 @@ local function get_installed_themes()
     'blue', 'darkblue', 'default', 'delek', 'desert', 'elflord', 'evening',
     'industry', 'koehler', 'morning', 'murphy', 'pablo', 'peachpuff', 'ron',
     'shine', 'slate', 'torte', 'zellner', 'zaibatsu', 'vim', 'wildcharm',
-     'lunaperche', 'retrobox', 'habamax', 'quiet'
+     'lunaperche', 'retrobox', 'habamax', 'quiet', 'sorbet'
   }
   
   if config.get().include_builtin_themes then
