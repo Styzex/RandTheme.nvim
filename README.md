@@ -56,7 +56,7 @@ require('randtheme').setup({
 })
 ```
 
-## 🔧 Options
+### 🔧 Options
 
 - `exclude_themes`: A table of theme names to exclude from random selection.
 - `change_on_startup`: If set to `true`, changes the theme when Neovim starts.
