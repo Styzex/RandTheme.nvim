@@ -1,5 +1,9 @@
 # 🎨 RandTheme.nvim
 
+<a href="https://dotfyle.com/plugins/Styzex/RandTheme.nvim">
+  <img src="https://dotfyle.com/plugins/Styzex/RandTheme.nvim/shield" />
+</a>
+
 RandTheme is a Neovim plugin that automatically sets a new theme every day, adding variety to your coding experience.
 
 ## ✨ Features
